@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SISTEM CRITICAL ERROR</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace; /* Font hacker/error */
+        }
+
+        body {
+            background-color: #000000;
+            color: #ff3b30;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+        }
+
+        /* Efek Getar saat Kritis */
+        .glitch-shake {
+            animation: shake 0.2s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(2px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(2px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
+        .container {
+            background: #0a0a0a;
+            border: 2px solid #ff3b30;
+            border-radius: 8px;
+            padding: 30px;
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .danger-sign {
+            font-size: 60px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff3b30;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        p {
+            font-size: 13px;
+            color: #ffffff;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            text-align: left;
+            border-left: 3px solid #ff3b30;
+            padding-left: 10px;
+        }
+
+        .timer-box {
+            background: #1a0000;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 30px;
+            border: 1px dashed #ff3b30;
+        }
+
+        #countdown {
+            color: #ff3b30;
+            font-size: 24px;
+            text-shadow: 0 0 8px #ff3b30;
+        }
+
+        .btn-container {
+            position: relative;
+            min-height: 140px;
+        }
+
+        .btn {
+            padding: 14px;
+            border: 1px solid #ff3b30;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+        }
+
+        .btn-danger {
+            background-color: #ff3b30;
+            color: black;
+            margin-bottom: 15px;
+        }
+
+        /* Tombol Batal yang Licin */
+        .btn-safe {
+            background-color: transparent;
+            color: #ff3b30;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            transition: all 0.1s ease-out;
+        }
+
+        /* Layar Hasil Akhir */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            font-family: sans-serif;
+        }
+
+        .overlay h2 {
+            font-size: 32px;
+            color: #00ff66;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #00ff66;
+        }
+
+        .overlay p {
+            border: none;
+            text-align: center;
+            color: #ccc;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-card">
+        <div class="danger-sign">☠️</div>
+        <h1>WIPING INTERNAL STORAGE...</h1>
+        <p>[SISTEM ERROR]: Trojan.AndroidOS.Wiper terdeteksi menginfeksi partisi /root. Seluruh foto, video, dan akun terhubung akan dihapus permanen untuk melindungi hardware.</p>
+        
+        <div class="timer-box">
+            PENGHAPUSAN DALAM: <span id="countdown">20</span> DETIK
+        </div>
+
+        <div class="btn-container" id="btn-area">
+            <button class="btn btn-danger" onclick="aksiZonk()">IKHLASKAN DATA (FORMAT)</button>
+            <button class="btn btn-safe" id="ghost-btn">BATALKAN & BERSIHKAN</button>
+        </div>
+    </div>
+
+    <!-- Screen Hasil Akhir -->
+    <div class="overlay" id="prank-screen">
+        <h2>Kena Mental Gak? 🧠💥</h2>
+        <p>Jantung aman, bro? Hahaha!</p>
+        <p style="margin-top: 15px; font-size: 13px; color: #666;">Web ini cuma prank. Data kamu 100% aman.</p>
+        <button class="btn" style="margin-top: 30px; max-width: 200px; color: #00ff66; border-color: #00ff66;" onclick="location.reload()">Main Lagi</button>
+    </div>
+
+    <script>
+        const ghostBtn = document.getElementById('ghost-btn');
+        const btnArea = document.getElementById('btn-area');
+        const mainCard = document.getElementById('main-card');
+        const countdownEl = document.getElementById('countdown');
+        const prankScreen = document.getElementById('prank-screen');
+        
+        let timeLeft = 20;
+        let prankTriggered = false;
+
+        // 1. Hitung Mundur dengan Efek Panik Tambahan
+        const timer = setInterval(() => {
+            if(prankTriggered) return;
+            timeLeft--;
+            countdownEl.textContent = timeLeft;
+            
+            // Efek Kritis saat waktu mepet (Di bawah 7 detik)
+            if (timeLeft <= 7) {
+                mainCard.classList.add('glitch-shake');
+                countdownEl.style.color = '#ffffff';
+            }
+            
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                triggerPrankSelesai();
+            }
+        }, 1000);
+
+        // 2. Fungsi Memicu Layar Penuh (Bikin Efek Terjebak)
+        function aktifkanFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        }
+
+        // 3. Logika Tombol Kabur + Iseng
+        function kabur() {
+            aktifkanFullScreen(); // Otomatis full screen pas mereka coba ngejar tombol
+
+            const areaWidth = btnArea.clientWidth;
+            const areaHeight = mainCard.clientHeight - 160;
+
+            const randomX = Math.floor(Math.random() * (areaWidth - ghostBtn.offsetWidth));
+            const randomY = Math.floor(Math.random() * (areaHeight - ghostBtn.offsetHeight)) - 40; 
+
+            ghostBtn.style.left = `${randomX}px`;
+            ghostBtn.style.top = `${randomY}px`;
+
+            // Trik Nakal: Peluang 15% memunculkan alert palsu yang mengulur waktu
+            if (Math.random() < 0.15 && timeLeft > 5) {
+                alert("Gagal membatalkan: Akses Ditolak oleh Trojan!");
+            }
+        }
+
+        ghostBtn.addEventListener('mouseenter', kabur);
+        ghostBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            kabur();
+        });
+
+        // 4. Selesai
+        function aksiZonk() {
+            triggerPrankSelesai();
+        }
+
+        function triggerPrankSelesai() {
+            prankTriggered = true;
+            clearInterval(timer);
+            // Keluar dari full screen biar mereka bisa bernapas lega
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            }
+            prankScreen.style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
